@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BF3F2A07-EEDF-4199-B17E-DC50B2D9971C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Customers</RootNamespace>
+    <AssemblyName>Customers</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile259</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\CustomerDetailController.cs" />
+    <Compile Include="Controllers\CustomerListController.cs" />
+    <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\Region.cs" />
+    <Compile Include="MyApp.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\CustomerViewModel.cs" />
+    <Compile Include="Views\CustomerDetailView.cs" />
+    <Compile Include="Views\CustomerListView.cs" />
+    <Compile Include="Views\OtherListView.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="iFactr.UI, Version=3.6.0.857, Culture=neutral, PublicKeyToken=5def820c44339cb7, processorArchitecture=MSIL">
+      <HintPath>..\packages\iFactr.UI.3.6.0.857\lib\iFactr.UI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="iFactr.Utilities, Version=3.6.0.22786, Culture=neutral, PublicKeyToken=e526c249adf1d396, processorArchitecture=MSIL">
+      <HintPath>..\packages\iFactr.Utilities.3.6.0.22786\lib\iFactr.Utilities.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MonoCross.Navigation, Version=2.1.0.280, Culture=neutral, PublicKeyToken=951ce2ca2159307c, processorArchitecture=MSIL">
+      <HintPath>..\packages\iFactr.Utilities.3.6.0.22786\lib\MonoCross.Navigation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=3e484124d433e1b9, processorArchitecture=MSIL">
+      <HintPath>..\packages\iFactr.Utilities.3.6.0.22786\lib\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
