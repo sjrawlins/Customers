@@ -8,6 +8,7 @@ using iFactr.Core.Utilities;
 using MonoCross.Navigation;
 using Customers.Models;
 using Customers.ViewModels;
+using iFactr.UI;
 
 namespace Customers.Controllers
 {
@@ -15,29 +16,39 @@ namespace Customers.Controllers
     {
         public override string Load(string uri, Dictionary<string, string> parameters)
         {
-            var custIndex = 0;
-            string viewPerspective = ViewPerspective.Default;
-
-            var index = parameters.GetValueOrDefault("index");
-            if (index.IsNullOrEmptyOrWhiteSpace())
+            var action = parameters.GetValueOrDefault("action");
+            if (action == "SAVE")
             {
-                Model = null;  // forces the Detail View to create it
-                viewPerspective = "Create";
+                Model.Save();
+                iApp.Navigate(new Link(CustomerListController.Uri));  // re-renders the ListView, adding the new Customer
             }
-            else
+            else if (action == "UPDATE")
             {
-                bool res = int.TryParse(index, out custIndex);
-                if (!res) custIndex = 0;
+                var custID = parameters.GetValueOrDefault("customerID");
+                if (custID.IsNullOrEmptyOrWhiteSpace())
+                {
+                    throw new Exception("customerID missing on UPDATE");
+                }
                 var customerViewModel = iApp.Session.GetValueOrDefault("DB") as CustomerViewModel;
                 if (customerViewModel == null)
                 {
-                    throw new System.Exception("Internal error");
+                    throw new Exception("DB missing");
                 }
-                Model = customerViewModel.Customers[custIndex];
+                var custObject = customerViewModel.Customers.Where(c => c.CustomerID == custID).First();
+                Model = custObject.Clone();  // make a copy so that updates are not instant
+                
+            }
+            else if (action == "DELETE")
+            {
+                iApp.Log.Debug("TODO: Remove the Customer");
+            }
+            else
+            {
+                Model = new Customer();
             }
 
             // return ViewPerpective based on the state of the Model
-            return viewPerspective;
+            return ViewPerspective.Default;
 
         }
 

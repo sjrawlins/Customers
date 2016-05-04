@@ -8,6 +8,7 @@ using iFactr.UI;
 using iFactr.UI.Controls;
 using Customers.Models;
 using Customers.ViewModels;
+using Customers.Controllers;
 
 namespace Customers.Views
 {
@@ -19,46 +20,48 @@ namespace Customers.Views
         protected override void OnRender()
         {
             Title = "Customer Detail";
-            Customer tempCustomer;
-            CustomerViewModel custDB = null;
 
             if (Model == null)
             {
-                tempCustomer = new Customer();
-                // get the list "Database" in case user adds a new customer, then return
-                // custDB = iApp.Session.GetValueOrDefault("DB") as CustomerViewModel;
-                custDB = (CustomerViewModel)iApp.Session["DB"];
-                var myGlobals = iApp.Session;
-
-                if (custDB == null)
-                {
-                    // throw new System.Exception("Internal error");
-                    tempCustomer = new Customer();
-                }
-            }
-            else {
-                tempCustomer = new Customer(Model);  // make a copy of the Customer in case user CANCELs
-            }
-
+                throw new Exception("Model cannot be null");
+            };
 
             Columns.Add(Column.AutoSized);
             Columns.Add(Column.AutoSized);
 
             AddChild(new Label("Name:") { Margin = margin, });
-            var nameBox = new TextBox() { Margin = margin, Placeholder = "Enter Customer Name", };
+            var nameBox = new TextBox() {
+                Margin = margin, Placeholder = "Enter Customer Name",
+                SubmitKey = "customerName",
+            };
             nameBox.SetBinding(new Binding("Text", "Name")
             {
                 Mode = BindingMode.TwoWay,   // provides update back to the Mod
-                Source = tempCustomer,
+                Source = Model,
             });
             AddChild(nameBox);
 
+            AddChild(new Label("ID:") { Margin = margin, });
+            var customerID = new Label()   // TODO: add Binding
+            {
+                Margin = margin,
+                Text = Model.CustomerID,
+            };
+            customerID.SetBinding(new Binding("Text", "CustomerID")
+            {
+                Mode = BindingMode.TwoWay,   // provides update back to the Mod
+                Source = Model,
+            });
+            AddChild(customerID);
+
             AddChild(new Label("Phone:") { Margin = margin, });
-            var phoneBox = new TextBox() { Margin = margin, Placeholder = "(nnn) nnn-nnnn", };
+            var phoneBox = new TextBox() {
+                Margin = margin, Placeholder = "(nnn) nnn-nnnn",
+                SubmitKey = "phoneNummber", };
             phoneBox.SetBinding(new Binding("Text", "Phone")
             {
                 Mode = BindingMode.TwoWay,
-                Source = tempCustomer,
+                Source = Model,
             });
             AddChild(phoneBox);
 
@@ -74,7 +77,7 @@ namespace Customers.Views
             emailBox.SetBinding(new Binding("Text", "EmailAddress")
             {
                 Mode = BindingMode.TwoWay,
-                Source = tempCustomer,
+                Source = Model,
             });
             AddChild(emailBox);
 
@@ -84,13 +87,13 @@ namespace Customers.Views
             });
             var regionSelector = new SelectList(Enum.GetNames(typeof(RegionCodes)))
             {
-                //SelectedIndex = (int)tempCustomer.RegionCode,
+                //SelectedIndex = (int)Model.RegionCode,
                 Margin = margin,
             };
             regionSelector.SetBinding(new Binding("SelectedIndex", "RegionCode")
             {
                 Mode = BindingMode.TwoWay,
-                Source = tempCustomer,
+                Source = Model,
             });
             AddChild(regionSelector);
 
@@ -120,13 +123,17 @@ namespace Customers.Views
             scoreSlider.SetBinding(new Binding("Value", "Score")
             {
                 Mode = BindingMode.TwoWay,
-                Source = tempCustomer,
+                Source = Model,
             });
             AddChild(scoreSlider);
             AddChild(scoreNumber);
 
             var cancelButton = new Button("CANCEL");
+
             var saveButton = new Button("SAVE");
+            //{
+            //    NavigationLink = new Link(CustomerDetailController.Uri+"/SAVE") {  Action = ActionType.Submit, },
+            //};
 
             cancelButton.Clicked += (o, e) =>
             {
@@ -138,25 +145,12 @@ namespace Customers.Views
             saveButton.Clicked += (o, e) =>
             {
                 var myAlert = new Alert("SAVE ALERT", "Are you sure you want to keep this?", AlertButtons.YesNo);
+                //myAlert.Show();
                 myAlert.Dismissed += (obj, args) =>
                 {
                     if (args.Result == AlertResult.Yes)
                     {
-                        if (Model == null)
-                        {
-                            // this is an "ADD"
-                            custDB.Customers.Add(tempCustomer);  // add the new customer to the list
-                                                                 // re-render the list of customers
-                                   
-
-                            PaneManager.Instance.FromNavContext(Pane.Master).Views.Last(c => c is CustomerListView).Render();
-                        }
-                        else
-                        {
-                            tempCustomer.Copy(Model);  // copy temp back to original customer
-                        }
-
-                        this.Stack.PopView();
+                        Submit(new Link(CustomerDetailController.Uri + "/SAVE"));
                     }
                 };
                 myAlert.Show();
@@ -166,8 +160,6 @@ namespace Customers.Views
             AddChild(saveButton);
 
         }
-
-
 
         private void CancelAlert_Dismissed(object sender, AlertResultEventArgs args)
         {

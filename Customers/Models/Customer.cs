@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Customers.ViewModels;
+using iFactr.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -9,6 +11,37 @@ namespace Customers.Models
 {
     public class Customer : INotifyPropertyChanged
     {
+
+        // The "Database" assigns GUID when first saving
+        public void Save()
+        {
+            var custDB = (CustomerViewModel)iApp.Session["DB"];
+            if (CustomerID.IsNullOrEmptyOrWhiteSpace())  // it's a new customer and needs a GUID for "unique" CustomerID
+            {
+                this.CustomerID = Guid.NewGuid().ToString();
+                custDB.Customers.Add(this);
+            }
+            else
+            {
+                // it's an update (the customer is already in the Database)
+                iApp.Log.Debug("Nothing to do here.  The Model has already been updated");
+            }
+        }
+
+        string _customerID;
+        public string CustomerID // unique ID
+
+        {
+            get { return _customerID; }
+            set
+            {
+                if (_customerID != value)
+                {
+                    _customerID = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CustomerID"));
+                }
+            }
+        }
         string _name;
         public string Name
         {
@@ -80,26 +113,14 @@ namespace Customers.Models
 
         public Customer()
         {
-            Name = Phone = EmailAddress = string.Empty;
+            CustomerID = Name = Phone = EmailAddress = string.Empty;
             Score = 0;
         }
 
-        public Customer(Customer other)
+        public Customer Clone()
         {
-            Name = other.Name;
-            EmailAddress = other.EmailAddress;
-            Phone = other.Phone;
-            Score = other.Score;
-            RegionCode = other.RegionCode;
+            return (Customer) this.MemberwiseClone();
         }
 
-        public void Copy(Customer other)
-        {
-            other.Name = Name;
-            other.EmailAddress = EmailAddress;
-            other.Phone = Phone;
-            other.Score = Score;
-            other.RegionCode = RegionCode;
-        }
     }
 }

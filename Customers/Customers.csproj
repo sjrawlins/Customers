@@ -42,7 +42,6 @@
     <Compile Include="ViewModels\CustomerViewModel.cs" />
     <Compile Include="Views\CustomerDetailView.cs" />
     <Compile Include="Views\CustomerListView.cs" />
-    <Compile Include="Views\OtherListView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="iFactr.UI, Version=3.6.0.857, Culture=neutral, PublicKeyToken=5def820c44339cb7, processorArchitecture=MSIL">

@@ -26,23 +26,16 @@ namespace Customers
 
             // Add navigation mappings
 
-            NavigationMap.Add("CustomerDetailControllerUri/{index}", new CustomerDetailController());
-
             var myC = new CustomerDetailController();
+            NavigationMap.Add(CustomerDetailController.Uri + "/{action}", myC);   // SAVE
+            NavigationMap.Add(CustomerDetailController.Uri + "/{action}/{customerID}", myC);  // UPDATE 
+            NavigationMap.Add(CustomerDetailController.Uri, myC);   // for creating a new customer ("Add" action off the list menu)
 
-            NavigationMap.Add(CustomerDetailController.Uri, myC);
             NavigationMap.Add(CustomerListController.Uri, new CustomerListController());
 
             // Add Views to ViewMap
-            MXContainer.AddView<Customer>(typeof(Views.CustomerDetailView));
-            MXContainer.AddView<Customer>(typeof(Views.CustomerDetailView), "Create");
-            //
-
+            MXContainer.AddView<Customer>(typeof(CustomerDetailView));
             MXContainer.AddView<CustomerViewModel>(typeof(CustomerListView));
-
-            //  Class demo only:
-            // MXContainer.AddView<CustomerViewModel>(typeof(OtherListView), "Another");
-
 
             // Set default navigation URI
             NavigateOnLoad = CustomerListController.Uri;

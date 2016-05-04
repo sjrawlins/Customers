@@ -30,11 +30,12 @@ namespace Customers.Views
             var mySearchBox = new SearchBox();
             mySearchBox.SearchPerformed += (o, e) =>
             {
-                string query = e.SearchText;
+                string query = e.SearchText.ToUpperInvariant();  // case insenstive
                 // filter model data based on query
                 filteredModel.Customers = Model.Customers.Where(c => c.Name.StartsWith(query)).ToList();
+                filteredModel.Regions = Model.Regions.Where(r => r.Code.ToString().StartsWith(query)).ToList();
                 Sections[0].ItemCount = filteredModel.TotalCustomers;
-                Sections[1].ItemCount = 1;
+                Sections[1].ItemCount = filteredModel.TotalRegions;
                 ReloadSections();
             };
             SearchBox = mySearchBox;
@@ -52,9 +53,10 @@ namespace Customers.Views
             Sections[1].CellRequested += (index, recycledCell) =>
             {
                 ContentCell cell = new ContentCell();
-                cell.TextLabel.Text = Model.Regions[index].Code.ToString();
-                cell.SubtextLabel.Text = Model.Regions[index].AccountRepresentative;
-                cell.ValueLabel.Text = Model.Regions[index].CustomerCount.ToString();
+             
+                cell.TextLabel.Text = filteredModel.Regions[index].Code.ToString();
+                cell.SubtextLabel.Text = filteredModel.Regions[index].AccountRepresentative;
+                cell.ValueLabel.Text = filteredModel.Regions[index].CustomerCount.ToString();
                 return cell;
             };
             Sections[1].Header = new SectionHeader("Regions")
@@ -137,6 +139,11 @@ namespace Customers.Views
                 Source = curCustomer,
             });
 
+            cell.CustomerIDLabel.SetBinding(new Binding("Text", "CustomerID")
+            {
+                Source = curCustomer,
+            });
+
             cell.PhoneNumberLabel.SetBinding(new Binding("Text", "Phone")
             {
                 Source = curCustomer,
@@ -162,7 +169,7 @@ namespace Customers.Views
             // only allow tap to Detail if the entire list is present! Shortcoming of the Detail Controller look-up!
             // Stupid work-around: only allow tap navigation if it's the entire list.
             //if (filteredModel.TotalCustomers == Model.TotalCustomers)
-            cell.NavigationLink = new Link(Controllers.CustomerDetailController.Uri + "/" + index.ToString());
+            cell.NavigationLink = new Link(Controllers.CustomerDetailController.Uri + "/UPDATE/" + curCustomer.CustomerID);
 
             return cell;
         }
@@ -196,6 +203,7 @@ namespace Customers.Views
         Thickness margin = new Thickness(0, 5, 10, 0);
 
         public ILabel CustomerNameLabel;
+        public ILabel CustomerIDLabel;
         public ILabel PhoneNumberLabel;
         public ILabel EmailAddressLabel;
         public ILabel RegionLabel;
@@ -221,6 +229,24 @@ namespace Customers.Views
                 Margin = margin,
             };
             AddChild(CustomerNameLabel);
+
+            // add a row for Unique Customer ID
+            Rows.Add(Row.AutoSized);
+
+            var custIDLabel = new Label()
+            {
+                ID = "custIDLabelID",
+                Text = "Customer ID:",
+                Margin = margin,
+            };
+            AddChild(custIDLabel);
+
+            CustomerIDLabel = new Label()
+            {
+                ID = "custIDValueID",
+                Margin = margin,
+            };
+            AddChild(CustomerIDLabel);
 
             // add a row for the phone number label and value
             Rows.Add(Row.AutoSized);
