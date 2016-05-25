@@ -145,7 +145,6 @@ namespace Customers.Views
             saveButton.Clicked += (o, e) =>
             {
                 var myAlert = new Alert("SAVE ALERT", "Are you sure you want to keep this?", AlertButtons.YesNo);
-                //myAlert.Show();
                 myAlert.Dismissed += (obj, args) =>
                 {
                     if (args.Result == AlertResult.Yes)

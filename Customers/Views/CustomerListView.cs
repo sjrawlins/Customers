@@ -32,7 +32,7 @@ namespace Customers.Views
             {
                 string query = e.SearchText.ToUpperInvariant();  // case insenstive
                 // filter model data based on query
-                filteredModel.Customers = Model.Customers.Where(c => c.Name.StartsWith(query)).ToList();
+                filteredModel.Customers = Model.Customers.Where(c => c.Name.ToUpperInvariant().StartsWith(query)).ToList();
                 filteredModel.Regions = Model.Regions.Where(r => r.Code.ToString().StartsWith(query)).ToList();
                 Sections[0].ItemCount = filteredModel.TotalCustomers;
                 Sections[1].ItemCount = filteredModel.TotalRegions;
@@ -165,10 +165,7 @@ namespace Customers.Views
                 Source = curCustomer,
             });
 
-            // BUG - Shortcoming of the Detail Controller look-up!
-            // only allow tap to Detail if the entire list is present! Shortcoming of the Detail Controller look-up!
-            // Stupid work-around: only allow tap navigation if it's the entire list.
-            //if (filteredModel.TotalCustomers == Model.TotalCustomers)
+            // Tapping Customer cell navigates to that Customer's Detail/Update screen
             cell.NavigationLink = new Link(Controllers.CustomerDetailController.Uri + "/UPDATE/" + curCustomer.CustomerID);
 
             return cell;

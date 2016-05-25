@@ -24,7 +24,16 @@ namespace Customers.Models
             else
             {
                 // it's an update (the customer is already in the Database)
-                iApp.Log.Debug("Nothing to do here.  The Model has already been updated");
+                var findCust = custDB.Customers.Where(c => c.CustomerID == CustomerID).First();
+                if (findCust == null)
+                {
+                    throw new ArgumentNullException("On SAVE attempt for CustomerID:" + CustomerID);
+                }
+                else
+                {
+                    custDB.Customers.Remove(findCust);
+                    custDB.Customers.Add(this);
+                }
             }
         }
 
