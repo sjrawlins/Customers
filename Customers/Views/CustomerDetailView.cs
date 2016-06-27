@@ -16,7 +16,7 @@ namespace Customers.Views
     class CustomerDetailView : GridView<Customer>
     {
         Thickness margin = new Thickness(5, 10, 10, 5);
-        
+
         protected override void OnRender()
         {
             Title = "Customer Detail";
@@ -30,8 +30,10 @@ namespace Customers.Views
             Columns.Add(Column.AutoSized);
 
             AddChild(new Label("Name:") { Margin = margin, });
-            var nameBox = new TextBox() {
-                Margin = margin, Placeholder = "Enter Customer Name",
+            var nameBox = new TextBox()
+            {
+                Margin = margin,
+                Placeholder = "Enter Customer Name",
                 SubmitKey = "customerName",
             };
             nameBox.SetBinding(new Binding("Text", "Name")
@@ -42,7 +44,7 @@ namespace Customers.Views
             AddChild(nameBox);
 
             AddChild(new Label("ID:") { Margin = margin, });
-            var customerID = new Label()   // TODO: add Binding
+            var customerID = new Label()
             {
                 Margin = margin,
                 Text = Model.CustomerID,
@@ -55,9 +57,12 @@ namespace Customers.Views
             AddChild(customerID);
 
             AddChild(new Label("Phone:") { Margin = margin, });
-            var phoneBox = new TextBox() {
-                Margin = margin, Placeholder = "(nnn) nnn-nnnn",
-                SubmitKey = "phoneNummber", };
+            var phoneBox = new TextBox()
+            {
+                Margin = margin,
+                Placeholder = "(nnn) nnn-nnnn",
+                SubmitKey = "phoneNummber",
+            };
             phoneBox.SetBinding(new Binding("Text", "Phone")
             {
                 Mode = BindingMode.TwoWay,
@@ -129,11 +134,8 @@ namespace Customers.Views
             AddChild(scoreNumber);
 
             var cancelButton = new Button("CANCEL");
-
+            var deleteButton = new Button("DELETE");
             var saveButton = new Button("SAVE");
-            //{
-            //    NavigationLink = new Link(CustomerDetailController.Uri+"/SAVE") {  Action = ActionType.Submit, },
-            //};
 
             cancelButton.Clicked += (o, e) =>
             {
@@ -155,8 +157,22 @@ namespace Customers.Views
                 myAlert.Show();
             };
 
+            deleteButton.Clicked += (o, e) =>
+            {
+                var myAlert = new Alert("DELETE ALERT", "Are you sure you want to delete this customer?", AlertButtons.YesNo);
+                myAlert.Dismissed += (obj, args) =>
+                {
+                    if (args.Result == AlertResult.Yes)
+                    {
+                        Submit(new Link(CustomerDetailController.Uri + "/DELETE/" + Model.CustomerID));
+                    }
+                };
+                myAlert.Show();
+            };
+
             AddChild(cancelButton);
             AddChild(saveButton);
+            AddChild(deleteButton);
 
         }
 

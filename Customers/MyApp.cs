@@ -28,7 +28,7 @@ namespace Customers
 
             var myC = new CustomerDetailController();
             NavigationMap.Add(CustomerDetailController.Uri + "/{action}", myC);   // SAVE
-            NavigationMap.Add(CustomerDetailController.Uri + "/{action}/{customerID}", myC);  // UPDATE 
+            NavigationMap.Add(CustomerDetailController.Uri + "/{action}/{customerID}", myC);  // UPDATE or DELETE
             NavigationMap.Add(CustomerDetailController.Uri, myC);   // for creating a new customer ("Add" action off the list menu)
 
             NavigationMap.Add(CustomerListController.Uri, new CustomerListController());

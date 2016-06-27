@@ -27,7 +27,7 @@ namespace Customers.Models
                 var findCust = custDB.Customers.Where(c => c.CustomerID == CustomerID).First();
                 if (findCust == null)
                 {
-                    throw new ArgumentNullException("On SAVE attempt for CustomerID:" + CustomerID);
+                    throw new ArgumentNullException("Missing customer on SAVE attempt for CustomerID:" + CustomerID);
                 }
                 else
                 {
@@ -37,6 +37,28 @@ namespace Customers.Models
             }
         }
 
+        public void Delete()
+        {
+            var custDB = (CustomerViewModel)iApp.Session["DB"];
+            if (CustomerID.IsNullOrEmptyOrWhiteSpace())
+            {
+                throw new ArgumentNullException("Missing customer on DELETE attempt");
+            }
+            else
+            {
+                var delCandidates = custDB.Customers.Where(c => c.CustomerID == CustomerID);
+                if (delCandidates.Count() != 1)
+                {
+                    throw new ArgumentNullException("Expecting, but failed, exact match on DELETE attempt for CustomerID:" + CustomerID);
+                }
+                else
+                {
+                    custDB.Customers.Remove(delCandidates.First());
+                }
+
+            }
+
+        }
         string _customerID;
         public string CustomerID // unique ID
 
@@ -128,7 +150,7 @@ namespace Customers.Models
 
         public Customer Clone()
         {
-            return (Customer) this.MemberwiseClone();
+            return (Customer)this.MemberwiseClone();
         }
 
     }

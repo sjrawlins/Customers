@@ -17,30 +17,35 @@ namespace Customers.Controllers
         public override string Load(string uri, Dictionary<string, string> parameters)
         {
             var action = parameters.GetValueOrDefault("action");
+            var customerViewModel = iApp.Session.GetValueOrDefault("DB") as CustomerViewModel;
+            if (customerViewModel == null)
+            {
+                throw new Exception("DB missing");
+            }
             if (action == "SAVE")
             {
                 Model.Save();
                 iApp.Navigate(new Link(CustomerListController.Uri));  // re-renders the ListView, adding the new Customer
             }
-            else if (action == "UPDATE")
+            else if (action == "UPDATE" || action == "DELETE")
             {
                 var custID = parameters.GetValueOrDefault("customerID");
                 if (custID.IsNullOrEmptyOrWhiteSpace())
                 {
-                    throw new Exception("customerID missing on UPDATE");
+                    throw new Exception("customerID missing on " + action);
                 }
-                var customerViewModel = iApp.Session.GetValueOrDefault("DB") as CustomerViewModel;
-                if (customerViewModel == null)
-                {
-                    throw new Exception("DB missing");
-                }
+
                 var custObject = customerViewModel.Customers.Where(c => c.CustomerID == custID).First();
-                Model = custObject.Clone();  // make a copy so that updates are not instant
-                
-            }
-            else if (action == "DELETE")
-            {
-                iApp.Log.Debug("TODO: Remove the Customer");
+                if (action == "DELETE")
+                {
+                    custObject.Delete();
+                    iApp.Navigate(CustomerListController.Uri);
+
+                }
+                else  // UPDATE, meaning: the customer already exists and the user has tapped that customer cell for details, so copy for potential update
+                {
+                    Model = custObject.Clone();  // make a copy so that updates are not instant
+                }     
             }
             else
             {

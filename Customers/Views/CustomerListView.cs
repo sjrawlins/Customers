@@ -13,7 +13,6 @@ using iFactr.Utilities.Serialization;
 
 namespace Customers.Views
 {
-    // TODO: Change the generic type to the type of your model  
     class CustomerListView : ListView<CustomerViewModel>
     {
         CustomerViewModel filteredModel = new CustomerViewModel();
@@ -68,16 +67,11 @@ namespace Customers.Views
             SeparatorColor = Color.Gray;
 
             var addAction = new MenuButton("Add");
-            var saveAction = new MenuButton("Save");
-            Menu = new Menu(addAction, saveAction);
+            Menu = new Menu(addAction);
             addAction.Clicked += (o, e) =>
             {
                 iApp.Navigate(new Link(CustomerDetailController.Uri));
             };
-            saveAction.Clicked += SaveAction_Clicked;
-
-
-
 
         }
 
