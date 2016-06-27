@@ -61,6 +61,7 @@ namespace Customers.Views
             {
                 Margin = margin,
                 Placeholder = "(nnn) nnn-nnnn",
+                KeyboardType = KeyboardType.Symbolic,
                 SubmitKey = "phoneNummber",
             };
             phoneBox.SetBinding(new Binding("Text", "Phone")
@@ -77,6 +78,7 @@ namespace Customers.Views
             var emailBox = new TextBox()
             {
                 Margin = margin,
+                KeyboardType = KeyboardType.Email,
                 Placeholder = "boss@acme.com",
             };
             emailBox.SetBinding(new Binding("Text", "EmailAddress")
